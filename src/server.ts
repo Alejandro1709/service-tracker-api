@@ -2,10 +2,13 @@ import express from 'express';
 import morgan from 'morgan';
 import { globalErrorHandler } from './middlewares/error';
 import dotenv from 'dotenv';
+import connectDb from './config/db';
 
 dotenv.config();
 
 const app = express();
+
+connectDb(process.env.MONGO_URI as string);
 
 app.use(morgan('dev'));
 
