@@ -6,6 +6,7 @@ import connectDb from './config/db';
 import serviceRouter from './routes/serviceRouter';
 import entriesRouter from './routes/entryRouter';
 import AppError from './utils/AppError';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const app = express();
 connectDb(process.env.MONGO_URI as string);
 
 app.use(express.json());
+app.use(cors());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
