@@ -3,6 +3,7 @@ import createServiceSchema from '../schemas/service.schema';
 import catchAsync from '../utils/catchAsync';
 import Service from '../models/Service';
 import slugify from 'slugify';
+import AppError from '../utils/AppError';
 
 export const getServices = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const services = await Service.find();
@@ -12,6 +13,10 @@ export const getServices = catchAsync(async (req: Request, res: Response, next: 
 
 export const getService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const service = await Service.findOne({ slug: req.params.slug });
+
+  if (!service) {
+    return next(new AppError('Service not found', 404));
+  }
 
   res.status(200).json({ status: 'success', service });
 });
@@ -37,11 +42,19 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
     runValidators: true,
   });
 
+  if (!service) {
+    return next(new AppError('Service not found', 404));
+  }
+
   res.status(200).json({ status: 'success', service });
 });
 
 export const deleteService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const service = await Service.findOne({ slug: req.params.slug });
+
+  if (!service) {
+    return next(new AppError('Service not found', 404));
+  }
 
   res.status(200).json({ status: 'success', service: null });
 });

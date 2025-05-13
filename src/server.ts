@@ -4,6 +4,7 @@ import { globalErrorHandler } from './middlewares/error';
 import dotenv from 'dotenv';
 import connectDb from './config/db';
 import serviceRouter from './routes/serviceRouter';
+import AppError from './utils/AppError';
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/services', serviceRouter);
 
 app.use((req, res, next) => {
-  res.status(404).json({ status: 'fail', message: 'This route does not exists' });
+  next(new AppError('This route does not exists', 404));
 });
 
 app.use(globalErrorHandler);
