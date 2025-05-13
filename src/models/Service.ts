@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 export interface IServiceDocument extends mongoose.Document {
   name: string;
@@ -27,6 +28,15 @@ const serviceSchema = new mongoose.Schema<IServiceDocument>(
     timestamps: true,
   }
 );
+
+serviceSchema.pre('save', function (next) {
+  if (!this.isModified('name')) {
+    return next();
+  }
+
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 const Service = mongoose.model('Service', serviceSchema);
 

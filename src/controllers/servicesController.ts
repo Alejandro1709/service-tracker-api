@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import createServiceSchema from '../schemas/service.schema';
 import catchAsync from '../utils/catchAsync';
 import Service from '../models/Service';
+import slugify from 'slugify';
 
 export const getServices = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const services = await Service.find();
@@ -26,7 +27,12 @@ export const createService = catchAsync(async (req: Request, res: Response, next
 export const updateService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const request = createServiceSchema.parse(req.body);
 
-  const service = await Service.findOneAndUpdate({ slug: req.params.slug }, request, {
+  const newReq = {
+    ...request,
+    slug: slugify(request.name, { lower: true }),
+  };
+
+  const service = await Service.findOneAndUpdate({ slug: req.params.slug }, newReq, {
     new: true,
     runValidators: true,
   });
