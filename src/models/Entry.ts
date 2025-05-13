@@ -7,6 +7,7 @@ export interface IEntryDocument extends mongoose.Document {
   paidAt: Date;
   dueDate: Date;
   isPaid: boolean;
+  isExpired: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,6 +35,10 @@ const entrySchema = new mongoose.Schema<IEntryDocument>(
       required: true,
     },
     isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    isExpired: {
       type: Boolean,
       default: false,
     },
