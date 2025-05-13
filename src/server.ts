@@ -11,6 +11,8 @@ const app = express();
 
 connectDb(process.env.MONGO_URI as string);
 
+app.use(express.json());
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
