@@ -23,10 +23,19 @@ export const createService = catchAsync(async (req: Request, res: Response, next
   res.status(201).json({ status: 'success', service });
 });
 
-export const updateService = (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Ok' });
-};
+export const updateService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const request = createServiceSchema.parse(req.body);
 
-export const deleteService = (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Ok' });
-};
+  const service = await Service.findOneAndUpdate({ slug: req.params.slug }, request, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({ status: 'success', service });
+});
+
+export const deleteService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const service = await Service.findOne({ slug: req.params.slug });
+
+  res.status(200).json({ status: 'success', service: null });
+});
