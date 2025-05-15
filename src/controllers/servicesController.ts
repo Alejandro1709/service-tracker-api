@@ -50,7 +50,7 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
 });
 
 export const deleteService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const service = await Service.findOne({ slug: req.params.slug });
+  const service = await Service.findOneAndDelete({ slug: req.params.slug });
 
   if (!service) {
     return next(new AppError('Service not found', 404));
