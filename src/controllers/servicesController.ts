@@ -6,13 +6,13 @@ import slugify from 'slugify';
 import AppError from '../utils/AppError';
 
 export const getServices = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const services = await Service.find();
+  const services = await Service.find().populate('entries');
 
   res.status(200).json({ status: 'success', services });
 });
 
 export const getService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const service = await Service.findById(req.params.id);
+  const service = await Service.findById(req.params.id).populate('entries');
 
   if (!service) {
     return next(new AppError('Service not found', 404));

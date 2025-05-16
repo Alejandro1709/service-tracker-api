@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import createEntrySchema from '../schemas/entry.schema';
 import Entry from '../models/Entry';
 import AppError from '../utils/AppError';
+import Service from '../models/Service';
 
 export const getEntries = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const entries = await Entry.find();
@@ -23,7 +24,17 @@ export const getEntry = catchAsync(async (req: Request, res: Response, next: Nex
 export const createEntry = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const request = createEntrySchema.parse(req.body);
 
+  const service = await Service.findById(req.body.service);
+
+  if (!service) {
+    return next(new AppError('Service not found', 404));
+  }
+
   const entry = await Entry.create(request);
+
+  service.entries.push(entry);
+
+  await service.save();
 
   res.status(201).json({ status: 'success', entry });
 });
