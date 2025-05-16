@@ -6,6 +6,7 @@ export interface IEntryDocument extends mongoose.Document {
   amount: number;
   paidAt: Date;
   dueDate: Date;
+  service: mongoose.Schema.Types.ObjectId;
   isPaid: boolean;
   isExpired: boolean;
   createdAt: Date;
@@ -33,6 +34,10 @@ const entrySchema = new mongoose.Schema<IEntryDocument>(
     dueDate: {
       type: Date,
       required: true,
+    },
+    service: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service',
     },
     isPaid: {
       type: Boolean,

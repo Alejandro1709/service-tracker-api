@@ -6,13 +6,13 @@ import slugify from 'slugify';
 import AppError from '../utils/AppError';
 
 export const getServices = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const services = await Service.find();
+  const services = await Service.find().populate('entries');
 
   res.status(200).json({ status: 'success', services });
 });
 
 export const getService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const service = await Service.findOne({ slug: req.params.slug });
+  const service = await Service.findById(req.params.id).populate('entries');
 
   if (!service) {
     return next(new AppError('Service not found', 404));
@@ -37,7 +37,7 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
     slug: slugify(request.name, { lower: true }),
   };
 
-  const service = await Service.findOneAndUpdate({ slug: req.params.slug }, newReq, {
+  const service = await Service.findByIdAndUpdate(req.params.id, newReq, {
     new: true,
     runValidators: true,
   });
@@ -50,7 +50,7 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
 });
 
 export const deleteService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const service = await Service.findOneAndDelete({ slug: req.params.slug });
+  const service = await Service.findByIdAndDelete(req.params.id);
 
   if (!service) {
     return next(new AppError('Service not found', 404));
