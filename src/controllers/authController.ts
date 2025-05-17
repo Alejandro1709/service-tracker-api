@@ -26,7 +26,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     return next(new AppError('Please provide email and password', 400));
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.comparePasswords(password, user.password))) {
     return next(new AppError('Invalid Credentials', 401));
