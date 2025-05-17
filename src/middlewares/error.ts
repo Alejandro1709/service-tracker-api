@@ -23,7 +23,7 @@ const handleDuplicateError = (res: Response, err: any) => {
 };
 
 export const globalErrorHandler: ErrorRequestHandler = (err, req: Request, res: Response, next: NextFunction) => {
-  //console.log(err);
+  // console.log(err);
 
   if (err instanceof z.ZodError) {
     handleZodError(res, err);
