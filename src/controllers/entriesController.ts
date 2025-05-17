@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import catchAsync from '../utils/catchAsync';
-import createEntrySchema from '../schemas/entry.schema';
+import { createEntrySchema, updateEntrySchema } from '../schemas/entry.schema';
 import Entry from '../models/Entry';
 import AppError from '../utils/AppError';
 import Service from '../models/Service';
@@ -40,8 +40,7 @@ export const createEntry = catchAsync(async (req: Request, res: Response, next: 
 });
 
 export const updateEntry = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  // TODO: Change schema to updateSchema
-  const request = createEntrySchema.parse(req.body);
+  const request = updateEntrySchema.parse(req.body);
 
   const entry = await Entry.findByIdAndUpdate(req.params.id, request, {
     new: true,
