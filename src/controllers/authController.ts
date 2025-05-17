@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import { createUserSchema, loginUserSchema } from '../schemas/user.schema';
 import User from '../models/User';
 import AppError from '../utils/AppError';
+import { generateJWTToken } from '../utils/jwt';
 
 export const register = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const request = createUserSchema.parse(req.body);
@@ -31,8 +32,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     return next(new AppError('Invalid Credentials', 401));
   }
 
-  // Generate Token
-  // Return token
+  const token = generateJWTToken({ id: user._id });
 
-  res.status(200).json({ status: 'success', token: null });
+  res.status(200).json({ status: 'success', token });
 });
