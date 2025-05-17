@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export interface IUserDocument extends mongoose.Document {
   name: string;
@@ -7,6 +8,7 @@ export interface IUserDocument extends mongoose.Document {
   role: string;
   createdAt: Date;
   updatedAt: Date;
+  comparePasswords: (enteredPassword: string, hashedPassword: string) => Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema<IUserDocument>(
@@ -38,6 +40,22 @@ const userSchema = new mongoose.Schema<IUserDocument>(
     timestamps: true,
   }
 );
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+
+  this.password = await bcrypt.hash(this.password, salt);
+
+  next();
+});
+
+userSchema.methods.comparePasswords = async function (enteredPassword: string, hashedPassword: string) {
+  return await bcrypt.compare(enteredPassword, hashedPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
