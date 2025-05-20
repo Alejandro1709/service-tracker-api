@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 import type { IEntryDocument } from './Entry';
+import { IUserDocument } from './User';
 
 export interface IServiceDocument extends mongoose.Document {
   name: string;
   slug: string;
   description: string;
   entries: IEntryDocument[];
+  user: IUserDocument;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +33,10 @@ const serviceSchema = new mongoose.Schema<IServiceDocument>(
         ref: 'Entry',
       },
     ],
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
