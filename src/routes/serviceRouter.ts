@@ -6,10 +6,11 @@ import {
   getServices,
   updateService,
 } from '../controllers/servicesController';
+import { protect } from '../middlewares/auth';
 
 const router = Router();
 
-router.route('/').get(getServices).post(createService);
+router.route('/').get(protect, getServices).post(protect, createService);
 
 router.route('/:id').get(getService).put(updateService).delete(deleteService);
 

@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { IServiceDocument } from './Service';
 
 export interface IUserDocument extends mongoose.Document {
   name: string;
   email: string;
   password: string;
   role: string;
+  services: IServiceDocument[];
   createdAt: Date;
   updatedAt: Date;
   comparePasswords: (enteredPassword: string, hashedPassword: string) => Promise<boolean>;
@@ -36,6 +38,12 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    services: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Service',
+      },
+    ],
   },
   {
     timestamps: true,

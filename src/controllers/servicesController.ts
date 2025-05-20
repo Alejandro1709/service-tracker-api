@@ -25,7 +25,7 @@ export const getService = catchAsync(async (req: Request, res: Response, next: N
 export const createService = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const request = createServiceSchema.parse(req.body);
 
-  const service = await Service.create(request);
+  const service = await Service.create({ ...request, user: req.user?._id });
 
   res.status(201).json({ status: 'success', service });
 });
