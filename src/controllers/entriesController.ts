@@ -12,7 +12,7 @@ export const getEntries = catchAsync(async (req: Request, res: Response, next: N
 });
 
 export const getEntry = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const entry = await Entry.findById(req.params.id);
+  const entry = await Entry.findById(req.params.id).populate('service');
 
   if (!entry) {
     return next(new AppError('Entry not found', 404));

@@ -12,6 +12,6 @@ const router = Router();
 
 router.route('/').get(protect, getServices).post(protect, createService);
 
-router.route('/:id').get(getService).put(updateService).delete(deleteService);
+router.route('/:id').get(protect, getService).put(protect, updateService).delete(protect, deleteService);
 
 export default router;
