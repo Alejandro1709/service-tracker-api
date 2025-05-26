@@ -36,3 +36,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
 
   res.status(200).json({ status: 'success', token });
 });
+
+export const getAuthUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  res.status(200).json({ status: 'success', user: req.user });
+});
