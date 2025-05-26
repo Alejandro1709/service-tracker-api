@@ -59,7 +59,7 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
     return next(new AppError('Service not found', 404));
   }
 
-  if (service.user !== req.user?.id) {
+  if (service.user.toString() !== req.user?.id) {
     return next(new AppError('You dont own this resource', 403));
   }
 
@@ -84,7 +84,7 @@ export const deleteService = catchAsync(async (req: Request, res: Response, next
     return next(new AppError('User not found', 404));
   }
 
-  if (service.user !== req.user?.id) {
+  if (service.user.toString() !== req.user?.id) {
     return next(new AppError('You dont own this resource', 403));
   }
 
