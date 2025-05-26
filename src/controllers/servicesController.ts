@@ -49,14 +49,20 @@ export const updateService = catchAsync(async (req: Request, res: Response, next
     slug: slugify(request.name, { lower: true }),
   };
 
-  const service = await Service.findByIdAndUpdate(req.params.id, newReq, {
-    new: true,
-    runValidators: true,
-  });
+  const service = await Service.findById(req.params.id);
 
   if (!service) {
     return next(new AppError('Service not found', 404));
   }
+
+  if (service.user !== req.user?.id) {
+    return next(new AppError('You dont own this resource', 403));
+  }
+
+  await service.updateOne(newReq, {
+    runValidators: true,
+    new: true,
+  });
 
   res.status(200).json({ status: 'success', service });
 });
@@ -72,6 +78,10 @@ export const deleteService = catchAsync(async (req: Request, res: Response, next
 
   if (!user) {
     return next(new AppError('User not found', 404));
+  }
+
+  if (service.user !== req.user?.id) {
+    return next(new AppError('You dont own this resource', 403));
   }
 
   if (user.services.includes(service.id)) {
