@@ -40,7 +40,7 @@ export const createEntry = catchAsync(async (req: Request, res: Response, next: 
     return next(new AppError('Service not found', 404));
   }
 
-  if (service.user !== req.user?.id) {
+  if (service.user.toString() !== req.user?.id) {
     return next(new AppError('You dont own this resource', 403));
   }
 
@@ -68,7 +68,7 @@ export const updateEntry = catchAsync(async (req: Request, res: Response, next: 
     return next(new AppError('Service not found', 404));
   }
 
-  if (service.user !== req.user?.id) {
+  if (service.user.toString() !== req.user?.id) {
     return next(new AppError('You dont own this resource', 403));
   }
 
@@ -93,9 +93,11 @@ export const deleteEntry = catchAsync(async (req: Request, res: Response, next: 
     return next(new AppError('Service not found', 404));
   }
 
-  if (service.user !== req.user?.id) {
+  if (service.user.toString() !== req.user?.id) {
     return next(new AppError('You dont own this resource', 403));
   }
+
+  await entry.deleteOne();
 
   res.status(200).json({ status: 'success', entry: null });
 });
