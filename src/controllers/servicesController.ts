@@ -8,7 +8,7 @@ import Entry from '../models/Entry';
 import User from '../models/User';
 
 export const getServices = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const services = await Service.find().populate('entries');
+  const services = await Service.find({ user: req.user }).populate('entries');
 
   res.status(200).json({ status: 'success', services });
 });
@@ -18,6 +18,10 @@ export const getService = catchAsync(async (req: Request, res: Response, next: N
 
   if (!service) {
     return next(new AppError('Service not found', 404));
+  }
+
+  if (service.user.toString() !== req.user?.id) {
+    return next(new AppError('You dont own this resource', 403));
   }
 
   res.status(200).json({ status: 'success', service });

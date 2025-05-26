@@ -18,6 +18,16 @@ export const getEntry = catchAsync(async (req: Request, res: Response, next: Nex
     return next(new AppError('Entry not found', 404));
   }
 
+  const service = await Service.findById(entry.service);
+
+  if (!service) {
+    return next(new AppError('Service not found', 404));
+  }
+
+  if (service.user.toString() !== req.user?.id) {
+    return next(new AppError('You dont own this resource', 403));
+  }
+
   res.status(200).json({ status: 'success', entry });
 });
 
